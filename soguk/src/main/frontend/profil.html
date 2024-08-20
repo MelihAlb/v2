@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profil</title>
+    <link rel="stylesheet" href="styles.css"> <!-- CSS dosyasını dahil ettik -->
+</head>
+<body>
+<header>
+    <div class="header-left">
+        <a href="index.html">Ana Sayfa</a>
+    </div>
+    <div class="header-center">
+        <a href="index.html" class="logo-link">SOĞUK</a>
+    </div>
+    <div class="header-right">
+        <a href="login.html" id="logout">Çıkış Yap</a>
+    </div>
+</header>
+
+<div class="container">
+    <h1>Profil</h1>
+    <p>Hoş geldiniz! Profil bilgilerinizi burada görebilirsiniz.</p>
+    <!-- Kullanıcının profil bilgileri buraya eklenebilir -->
+</div>
+
+<script>
+    // Sayfa yüklendiğinde giriş kontrolü
+    document.addEventListener('DOMContentLoaded', function() {
+        const loggedIn = localStorage.getItem('loggedIn');
+
+        if (loggedIn !== 'true') {
+            window.location.href = 'login.html'; // Giriş yapmamış kullanıcıları login sayfasına yönlendir
+        }
+    });
+
+    // Çıkış yapma işlemi
+    document.getElementById('logout').addEventListener('click', function() {
+        localStorage.removeItem('loggedIn');
+    });
+</script>
+</body>
+</html>

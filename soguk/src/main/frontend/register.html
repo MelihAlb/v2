@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Üye Ol</title>
+    <link rel="stylesheet" href="styles.css"> <!-- CSS dosyasını dahil ettik -->
+</head>
+<body>
+<header>
+    <div class="header-left">
+        <a href="index.html">Ana Sayfa</a>
+    </div>
+    <div class="header-center">
+        <a href="index.html" class="logo-link">SOĞUK</a>
+    </div>
+    <div class="header-right">
+        <a href="login.html">Giriş Yap</a>
+    </div>
+</header>
+
+<div class="container">
+    <h1>Üye Ol</h1>
+    <form id="register-form">
+        <div class="form-group">
+            <label for="nick">Kullanıcı Adı:</label>
+            <input type="text" id="nick" name="nick" required>
+        </div>
+        <div class="form-group">
+            <label for="email">E-posta:</label>
+            <input type="email" id="email" name="email" required>
+        </div>
+        <div class="form-group">
+            <label for="password">Şifre:</label>
+            <input type="password" id="password" name="password" required>
+        </div>
+        <div class="form-group">
+            <button type="submit" class="button">Kaydol</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    document.getElementById('register-form').addEventListener('submit', async function(event) {
+        event.preventDefault();
+
+        const nick = document.getElementById('nick').value;
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+
+        try {
+            const response = await fetch('http://localhost:8080/users', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ nick, email, password })
+            });
+
+            if (response.ok) {
+                alert('Kayıt başarılı!');
+                window.location.href = 'login.html'; // Kayıt başarılı ise login sayfasına yönlendir
+            } else {
+                const errorData = await response.json();
+                alert('Hata: ' + errorData.message);
+            }
+        } catch (error) {
+            console.error('Kayıt sırasında bir hata oluştu:', error);
+        }
+    });
+</script>
+</body>
+</html>
