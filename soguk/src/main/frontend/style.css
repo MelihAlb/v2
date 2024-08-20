@@ -1,0 +1,63 @@
+/* Sayfanın genel stili */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0; /* Gri tonunda arka plan rengi */
+    color: #2e8b57; /* Yeşil metin rengi */
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* Başlık stili */
+h1 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* Formun stilini ayarlama */
+form {
+    background-color: #ffffff; /* Beyaz arka plan rengi */
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Hafif gölge efekti */
+    padding: 20px;
+    max-width: 400px;
+    width: 100%;
+}
+
+/* Form grup stili */
+.form-group {
+    margin-bottom: 15px;
+}
+
+/* Etiket stili */
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+/* Girdi alanı stili */
+.form-group input {
+    width: calc(100% - 20px); /* Padding ve border için genişlik ayarlaması */
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+/* Buton stili */
+.form-group button {
+    width: 100%;
+    padding: 10px;
+    background-color: #2e8b57; /* Yeşil buton rengi */
+    color: #ffffff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.form-group button:hover {
+    background-color: #1e6f4b; /* Daha koyu yeşil hover rengi */
+}
