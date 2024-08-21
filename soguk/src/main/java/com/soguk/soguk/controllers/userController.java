@@ -32,13 +32,15 @@ public class userController {
 
     @PostMapping
     public ResponseEntity<User> registerUser(@RequestBody User user) {
+
         User createdUser = userService.registerUser(user);
         return ResponseEntity.ok(createdUser);
     }
 
     @PostMapping("/login")
     public ResponseEntity<?> loginUser(@RequestBody userLoginRequest loginRequest) {
-        System.out.println("Login attempt: " + loginRequest.getNick());
+        System.out.println("Login attempt for nick: " + loginRequest.getNick());
+
         User user = userService.findByNick(loginRequest.getNick());
 
         if (user == null) {
@@ -46,13 +48,17 @@ public class userController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Geçersiz kullanıcı adı veya şifre");
         }
 
-        System.out.println("User found, validating password");
-        if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
-            System.out.println("Password mismatch");
+        System.out.println("User found, validating password for user: " + loginRequest.getNick());
+        System.out.println("Password from database: " + user.getPassword()); // Loglama
+
+        if (!loginRequest.getPassword().equals(user.getPassword())) {
+            System.out.println("Password mismatch for user: " + loginRequest.getNick());
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Geçersiz kullanıcı adı veya şifre");
         }
 
         String token = jwtUtil.generateToken(user.getNick());
+        System.out.println("Token generated for user: " + loginRequest.getNick() + " - Token: " + token);
+
         return ResponseEntity.ok(new JwtResponse(token));
     }
 

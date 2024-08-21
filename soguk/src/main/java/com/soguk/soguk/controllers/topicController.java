@@ -25,7 +25,6 @@ public class topicController {
     public List<Topic> getAllTopics() {
         return topicService.getAllTopics();
     }
-
     @PostMapping("post")
     public Topic createTopic(@RequestBody Topic topic) {
         return topicService.createTopic(topic);
