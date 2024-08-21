@@ -6,5 +6,6 @@ import com.soguk.soguk.models.Entry;
 import java.util.List;
 
 public interface entryRepo extends MongoRepository<Entry, String> {
+    int countByTopicId(String topicId);
     List<Entry> findByTopicId(String topicId);
 }

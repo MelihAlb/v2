@@ -19,32 +19,57 @@
     </div>
 </header>
 
-<div class="container">
-    <h1>Giriş Yap</h1>
-    <form id="login-form">
-        <div class="form-group">
-            <label for="nick">Kullanıcı Adı:</label>
-            <input type="text" id="nick" name="nick" required>
+<!-- Modal yapısı -->
+<div id="loginModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <span class="modal-title">Giriş Yap</span>
+            <button class="close">&times;</button>
         </div>
-        <div class="form-group">
-            <label for="password">Şifre:</label>
-            <input type="password" id="password" name="password" required>
-        </div>
-        <div class="form-group">
-            <button type="submit" class="button">Giriş Yap</button>
-        </div>
-    </form>
+        <form id="login-form">
+            <div class="form-group">
+                <label for="nick">Kullanıcı Adı:</label>
+                <input type="text" id="nick" name="nick" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Şifre:</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <div class="form-group">
+                <button type="submit" class="button">Giriş Yap</button>
+            </div>
+        </form>
+    </div>
 </div>
 
 <script>
+    // Modal açma fonksiyonu
+    document.addEventListener('DOMContentLoaded', function() {
+        const modal = document.getElementById('loginModal');
+        const closeBtn = document.querySelector('.close');
+
+        // Modal'ı göster
+        modal.style.display = 'block';
+
+        // Kapatma butonuna tıklanınca modal'ı gizle
+        closeBtn.addEventListener('click', function() {
+            modal.style.display = 'none';
+        });
+
+        // Modal dışında bir yere tıklanırsa modal'ı gizle
+        window.addEventListener('click', function(event) {
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
+        });
+    });
+
+    // Giriş formu için JavaScript kodu
     document.getElementById('login-form').addEventListener('submit', async function(event) {
         event.preventDefault();
 
         const nick = document.getElementById('nick').value;
         const password = document.getElementById('password').value;
-
-        console.log('Kullanıcı Adı:', nick);
-        console.log('Şifre:', password);
 
         try {
             const response = await fetch('http://localhost:8080/users/login', {
@@ -55,22 +80,16 @@
                 body: JSON.stringify({ nick, password })
             });
 
-            console.log('Response status:', response.status);
-            console.log('Response status text:', response.statusText);
-            console.log('Response headers:', JSON.stringify([...response.headers]));
-
             if (response.ok) {
                 const token = await response.json();
-                console.log('Başarıyla giriş yapıldı. Token:', token.token);
-                localStorage.setItem('authToken', token.token); // Token'ı yerel depolamaya kaydediyoruz
-                window.location.href = 'profil.html'; // Başarıyla giriş yaptıktan sonra profil sayfasına yönlendir
+                localStorage.setItem('authToken', token.token);
+                alert('Giriş Yapıldı');
+                window.location.href = 'index.html';
             } else {
                 const error = await response.text();
-                console.error('Giriş hatası:', error);
                 alert('Giriş hatası: ' + error);
             }
         } catch (error) {
-            console.error('Giriş yapılırken hata:', error);
             alert('Giriş yapılırken bir hata oluştu.');
         }
     });

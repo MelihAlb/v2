@@ -8,26 +8,22 @@ document.addEventListener("DOMContentLoaded", function() {
         })
         .then(data => {
             const topicList = document.getElementById('topicList');
+            topicList.innerHTML = ''; // Clear the list before adding new items
+
             data.forEach(topic => {
                 const listItem = document.createElement('li');
                 const container = document.createElement('div');
-                container.className = 'topic-container';
+                container.className = 'container';
 
-                // Başlık ve entryCount
-                const titleElement = document.createElement('h2');
+                const titleElement = document.createElement('h1');
                 titleElement.textContent = topic.title;
 
                 const entryCountElement = document.createElement('span');
-                entryCountElement.className = 'entry-count';
-                entryCountElement.textContent = `Entry Sayısı: ${topic.entryCount || 0}`;
+                const entryCount = topic.entryCount || 0;
 
-                // Yorum simgesi (buton)
                 const commentIcon = document.createElement('button');
                 commentIcon.className = 'comment-icon';
-                commentIcon.textContent = '💬';  // Yorum simgesi
-                commentIcon.addEventListener('click', () => {
-                    alert(`Başlık: ${topic.title} - Entry Sayısı: ${topic.entryCount}`);
-                });
+                commentIcon.innerHTML = `💬 <span class="entry-count">${entryCount}</span>`;
 
                 container.appendChild(titleElement);
                 container.appendChild(entryCountElement);
@@ -37,4 +33,38 @@ document.addEventListener("DOMContentLoaded", function() {
             });
         })
         .catch(error => console.error('Error:', error));
+    /*
+    async function fetchEntries() {
+        try {
+            const response = await fetch('http://localhost:8080/entries'); // Backend API URL
+            const entries = await response.json();
+            const entriesList = document.getElementById('entries-list');
+
+            entriesList.innerHTML = '';
+
+            entries.forEach(entry => {
+                const li = document.createElement('li');
+
+                // Create elements for content and like count
+                const contentSpan = document.createElement('span');
+                contentSpan.className = 'content';
+                contentSpan.textContent = entry.content;
+
+                const likeCountSpan = document.createElement('span');
+                likeCountSpan.className = 'likeCount';
+                likeCountSpan.textContent = `Likes: ${entry.likeCount}`;
+
+                // Append elements to list item
+                li.appendChild(contentSpan);
+                li.appendChild(likeCountSpan);
+
+                // Append list item to list
+                entriesList.appendChild(li);
+            });
+        } catch (error) {
+            console.error('Error fetching entries:', error);
+        }
+    }
+
+     */
 });

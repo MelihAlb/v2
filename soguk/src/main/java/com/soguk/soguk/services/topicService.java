@@ -4,24 +4,27 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.soguk.soguk.models.Topic;
 import com.soguk.soguk.repositories.topicRepo;
-
+import com.soguk.soguk.repositories.entryRepo;
 import java.util.List;
 
 @Service
 public class topicService {
 
     @Autowired
-    private static topicRepo topicRepo;
+    private  topicRepo topicRepo;
+    @Autowired
+    private entryRepo entryRepo;
     public Topic createTopic(Topic topic) {
         if (topicRepo.existsByTitle(topic.getTitle())){
             throw new IllegalArgumentException("Bu başlık bulunmaktadır");
         }
         return topicRepo.save(topic);
     }
-    public static void incrementEntryCount(String topicId) {
+    public void updateEntryCount(String topicId) {
+        int count = entryRepo.countByTopicId(topicId);
         Topic topic = topicRepo.findById(topicId).orElse(null);
         if (topic != null) {
-            topic.setEntryCount(topic.getEntryCount() + 1);
+            topic.setEntryCount(count);
             topicRepo.save(topic);
         }
     }

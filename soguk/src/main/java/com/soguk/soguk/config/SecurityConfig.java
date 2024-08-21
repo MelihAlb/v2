@@ -19,6 +19,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -30,7 +31,7 @@ public class SecurityConfig {
             public UserDetails loadUserByUsername(String nick) throws UsernameNotFoundException {
                 return null;
             }
-        }; // Burada uygun UserDetailsService sınıfını belirtmelisin.
+        };
     }
 
     @Bean
@@ -39,7 +40,7 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeRequests(authorizeRequests ->
                         authorizeRequests
-                                .requestMatchers("/users","/entries").permitAll()
+                                .requestMatchers("/users","/entries","http://localhost:8080/topics","/topics/**").permitAll()
                                 .requestMatchers("/users/login").permitAll()
                                 .anyRequest().authenticated()
                 )

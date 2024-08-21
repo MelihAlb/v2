@@ -1,6 +1,7 @@
 package com.soguk.soguk.services;
 
 import com.soguk.soguk.models.Entry;
+import com.soguk.soguk.models.Topic;
 import com.soguk.soguk.repositories.entryRepo;
 import com.soguk.soguk.repositories.topicRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,10 +28,18 @@ public class entryService {
 
     public Entry createEntry(Entry entry) {
         if (topicRepository.existsById(entry.getTopicId())) {
-            topicService.incrementEntryCount(entry.getTopicId());
+            updateEntryCount(entry.getTopicId());
             return entryRepository.save(entry);
         } else {
             throw new IllegalArgumentException("Başlık bulunamadı");
+        }
+    }
+    private void updateEntryCount(String topicId) {
+        int count = entryRepository.countByTopicId(topicId);
+        Topic topic = topicRepository.findById(topicId).orElse(null);
+        if (topic != null) {
+            topic.setEntryCount(count);
+            topicRepository.save(topic);
         }
     }
 
