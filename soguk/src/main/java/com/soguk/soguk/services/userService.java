@@ -30,8 +30,10 @@ public class userService {
         if (userRepo.existsByEmail(user.getEmail())) {
             throw new IllegalArgumentException("Email alınmış durumda");
         }
-        String encodedPassword = passwordEncoder.encode(user.getPassword());
+        /*String encodedPassword = passwordEncoder.encode(user.getPassword());
         user.setPassword(encodedPassword);
+
+         */
         return userRepo.save(user);
     }
 

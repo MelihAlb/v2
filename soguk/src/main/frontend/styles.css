@@ -23,12 +23,21 @@ header {
     left: 0;
     z-index: 1000;
 }
+.logo-link {
+    color: #1aa254; /* Renk kodunu buraya girin (örneğin kırmızı) */
+    text-decoration: none; /* Alt çizgiyi kaldırmak için */
+}
+
+.logo-link:hover {
+    color: #00fff7; /* Üzerine gelinceki renk */
+}
 
 .header-left, .header-right {
     flex: 1;
 }
 
 .header-center {
+
     text-align: center;
     flex: 2;
 }
@@ -99,7 +108,7 @@ li {
     z-index: 10;
 }
 .button {
-    background-color: #007bff;
+    background-color: #159c45;
     color: white;
     border: none;
     padding: 10px 20px;
@@ -108,7 +117,7 @@ li {
 }
 
 .button:hover {
-    background-color: #0056b3;
+    background-color: #159c45;
 }
 
 .form-group {
@@ -146,45 +155,6 @@ li {
     color: #333;
 }
 
-.modal {
-    display: none; /* Başlangıçta gizli */
-    position: fixed;
-    z-index: 1001; /* Header'dan sonra */
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgba(0, 0, 0, 0.5); /* Hafif koyu arka plan */
-}
-
-
-.modal-content {
-    background-color: #fff;
-    margin: 15% auto; /* Sayfanın ortasında konumlandırma */
-    padding: 20px;
-    border: 1px solid #888;
-    width: 80%; /* Ekranın %80 genişliği */
-    max-width: 500px; /* Maksimum genişlik */
-    border-radius: 8px; /* Köşeleri yuvarlama */
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Hafif gölge */
-}
-
-
-.modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid #ddd;
-    padding-bottom: 10px;
-}
-
-.modal-title {
-    font-size: 1.5em;
-    margin: 0;
-}
-
-
 .close {
     color: #aaa;
     font-size: 1.5em;
@@ -202,20 +172,21 @@ li {
 }
 /* Kayıt formu sayfası için özel stiller */
 .register-container {
+
     background-color: #fff;
     border: 2px solid #e4eae7;
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
     padding: 20px;
     width: 100%;
-    max-width: 500px; /* Maksimum genişlik */
-    margin: 100px auto; /* Sayfanın ortasında konumlandırma */
+    max-width: 500px;
+    margin: 100px auto; /
     box-sizing: border-box;
     text-align: center;
 }
 
 .register-container h1 {
-    margin: 0;
+    margin: 50px;
     font-size: 1.5em;
     color: #333;
 }
@@ -252,3 +223,44 @@ li {
     background-color: #159c45;
 }
  /*Buraya kadar */
+.login-container {
+    margin: 100px auto;
+    width: 400px;
+    border: 2px solid #e4eae7;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    padding: 2em;
+    background-color: #f9f9f9;
+}
+
+.login-form-group {
+    margin-bottom: 1.5em;
+}
+
+.login-form-group label{
+    display: block;
+    margin-bottom: 0.5em;
+}
+
+.login-form-group input {
+    width: 100%;
+    padding: 0.8em;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.login-button{
+    width: 100%;
+    padding: 1em;
+    background-color: #159c45;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1em;
+}
+
+.login-button:hover {
+    background-color: #159c45;
+}
+
