@@ -4,12 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ana Sayfa</title>
-    <link rel="stylesheet" href="styles.css"> <!-- CSS dosyasını dahil ettik -->
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 <header>
     <div class="header-left">
-        <a href="search.html" class="button">Ara</a>
+        <a id="search-btn" class="button">Ara</a>
     </div>
     <div class="header-center">
         <a href="index.html" class="logo-link">SOĞUK</a> <!-- Başlık bağlantısı eklendi -->
@@ -24,12 +24,60 @@
             <a href="register.html" class="button" id="signup-btn">Üye Ol</a>
         </div>
     </div>
-    </header>
-        <div>
-            <main>
-            <ul id="topicList"></ul>
-            </main>
-                <script src="app.js"></script>
+</header>
+
+<main>
+    <ul id="topicList"></ul>
+</main>
+
+<div id="searchModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button class="close">&times;</button>
         </div>
-    </body>
+        <div class="modal-body">
+            <input type="text" id="searchQuery" placeholder="Arama terimini girin" />
+            <button id="searchSubmit" class="modal-button">Ara</button>
+        </div>
+    </div>
+</div>
+
+<script src="app.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+
+        const searchBtn = document.getElementById('search-btn');
+        const modal = document.getElementById('searchModal');
+        const closeBtn = document.querySelector('.close');
+
+
+        searchBtn.addEventListener('click', function() {
+            modal.style.display = 'block';
+        });
+
+
+        closeBtn.addEventListener('click', function() {
+            modal.style.display = 'none';
+        });
+
+
+        window.addEventListener('click', function(event) {
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+
+
+        const searchSubmit = document.getElementById('searchSubmit');
+        searchSubmit.addEventListener('click', function() {
+            const searchQuery = document.getElementById('searchQuery').value;
+            if (searchQuery) {
+                window.location.href = `searchResult.html?q=${encodeURIComponent(searchQuery)}`;
+            }
+        });
+    });
+</script>
+
+</body>
 </html>

@@ -9,10 +9,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
-
 @Service
 public class JwtUtil {
-    private String SECRET_KEY = "secret";  // Bu anahtarı çevresel değişkenlerden alman önerilir
+    private String SECRET_KEY = "secret";
 
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);

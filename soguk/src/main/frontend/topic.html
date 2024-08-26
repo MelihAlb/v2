@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Topic Details</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header>
+    <div class="header-left">
+        <a id="search-btn" class="button">Ara</a>
+    </div>
+    <div class="header-center">
+        <a href="index.html" class="logo-link">SOĞUK</a>
+    </div>
+    <div class="header-right">
+        <div id="user-info" style="display: none;">
+            <span id="user-name"></span>
+            <button id="logout-btn" class="button logout-btn">Çıkış Yap</button>
+        </div>
+        <div id="guest-info">
+            <a href="login.html" id="loginModal" class="button">Giriş Yap</a>
+            <a href="register.html" class="button" id="signup-btn">Üye Ol</a>
+        </div>
+    </div>
+</header>
+
+<main>
+    <h1 id="topicTitle"></h1>
+    <ul id="entriesList"></ul>
+</main>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const topicId = urlParams.get('id');
+
+        if (!topicId) {
+            console.error('Topic ID not found.');
+            return;
+        }
+
+        fetch(`http://localhost:8080/entries/topic/${topicId}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(entries => {
+                const entriesList = document.getElementById('entriesList');
+                const topicTitle = document.getElementById('topicTitle');
+
+                entriesList.innerHTML = '';
+                topicTitle.textContent = `Entries for Topic ${topicId}`;
+
+                entries.forEach(entry => {
+                    const listItem = document.createElement('li');
+
+                    const contentSpan = document.createElement('span');
+                    contentSpan.className = 'content';
+                    contentSpan.textContent = entry.content;
+
+                    const likeCountSpan = document.createElement('span');
+                    likeCountSpan.className = 'likeCount';
+                    likeCountSpan.textContent = `Likes: ${entry.likeCount}`;
+
+                    listItem.appendChild(contentSpan);
+                    listItem.appendChild(likeCountSpan);
+
+                    entriesList.appendChild(listItem);
+                });
+            })
+            .catch(error => {
+                console.error('Error fetching entries:', error);
+            });
+    });
+</script>

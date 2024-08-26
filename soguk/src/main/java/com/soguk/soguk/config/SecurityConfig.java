@@ -31,6 +31,11 @@ public class SecurityConfig {
             public UserDetails loadUserByUsername(String nick) throws UsernameNotFoundException {
                 return null;
             }
+            /*
+            Bu method, kullanıcı doğrulaması yapmak için bir UserDetailsService bean'i döner.
+            Ancak şu an loadUserByUsername(String nick) metodu içinde bir kullanıcı yükleme işlemi bulunmamakta,
+            sadece null döndürmektedir. Gerçek bir uygulamada bu metod, kullanıcıyı veritabanından nick ile arar ve geri döner
+             */
         };
     }
 
@@ -40,8 +45,8 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeRequests(authorizeRequests ->
                         authorizeRequests
-                                .requestMatchers("/users","/entries","http://localhost:8080/topics","/topics/**").permitAll()
-                                .requestMatchers("/users/login").permitAll()
+                                .requestMatchers("/users","/entries","http://localhost:8080/topics","/topics/**","/entries/topic/**").permitAll()
+                                .requestMatchers("/users/login","/user").permitAll()
                                 .anyRequest().authenticated()
                 )
                 .sessionManagement(sessionManagement ->

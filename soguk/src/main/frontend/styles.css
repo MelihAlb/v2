@@ -105,7 +105,7 @@ li {
     right: 5px;
     background-size: cover;
     cursor: pointer;
-    z-index: 10;
+    z-index: 5;
 }
 .button {
     background-color: #159c45;
@@ -263,4 +263,59 @@ li {
 .login-button:hover {
     background-color: #159c45;
 }
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 6;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4);
 
+}
+
+.modal-content {
+    z-index: 6;
+    background-color: #159c45;
+    margin: 25% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 50%;
+
+}
+
+.modal-header .close {
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    background: #1aa254;
+}
+
+.modal-header .close:hover,
+.modal-header .close:focus {
+    color: red;
+    cursor: pointer;
+}
+.searchQuery{
+    z-index: 6;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    font-palette: dark;
+    cursor: pointer;
+    margin-top: 10px;
+
+}
+.modal-button {
+    background-color: #0c0404;
+    color: white;
+    border: #333333;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 10px;
+    margin-left: 50px;
+}

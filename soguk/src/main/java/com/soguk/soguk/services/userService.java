@@ -32,7 +32,6 @@ public class userService {
         }
         /*String encodedPassword = passwordEncoder.encode(user.getPassword());
         user.setPassword(encodedPassword);
-
          */
         return userRepo.save(user);
     }
@@ -55,6 +54,12 @@ public class userService {
         return userRepo.findByNick(nick);
     }
 
+    public User searchUserByNick(String query) {
+        if (query.startsWith("@")) {
+            query = query.substring(1);
+        }
+        return userRepo.findByNick(query);
+    }
     public boolean validatePassword(String rawPassword, String hashedPassword) {
         return passwordEncoder.matches(rawPassword, hashedPassword);
     }

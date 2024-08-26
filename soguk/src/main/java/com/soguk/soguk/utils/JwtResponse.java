@@ -1,5 +1,5 @@
 package com.soguk.soguk.utils;
-
+//HTTP yanıtları için JSON formatında veri döndürmek için
 public class JwtResponse {
     private String token;
 

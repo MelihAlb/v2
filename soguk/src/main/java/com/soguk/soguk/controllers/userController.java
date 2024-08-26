@@ -5,6 +5,7 @@ import com.soguk.soguk.models.User;
 import com.soguk.soguk.services.userService;
 import com.soguk.soguk.utils.JwtResponse;
 import com.soguk.soguk.utils.JwtUtil;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,7 +13,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.logging.Logger;
 
 @RestController
 @RequestMapping("/users")
@@ -57,8 +60,17 @@ public class userController {
 
         String token = jwtUtil.generateToken(user.getNick());
         System.out.println("Token generated for user: " + loginRequest.getNick() + " - Token: " + token);
-
         return ResponseEntity.ok(new JwtResponse(token));
+    }
+    @GetMapping("/search")
+    public ResponseEntity<User> searchUser(@RequestParam("query") String query) {
+        System.out.println("search işlemine girdi");
+        User user = userService.findByNick(query);
+        if (user != null) {
+            return ResponseEntity.ok(user);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @GetMapping("/id/{id}")

@@ -4,7 +4,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-
+/*
+(WebMvcConfigurer)Bu sınıfı implemente ederek, web yapılandırması üzerinde ince ayarlar yapabilirsin.
+Burada özellikle CORS yapılandırmasını yönetmek için kullanılıyor.Yani aşağıda verilen originsden backend için verilen methodlara ulaşabilir
+ */
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
     @Override

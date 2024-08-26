@@ -1,5 +1,5 @@
 package com.soguk.soguk.controllers;
-//henüz olmadı
+
 public class userLoginRequest {
     private String nick;
     private String password;
