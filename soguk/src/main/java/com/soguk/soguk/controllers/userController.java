@@ -62,6 +62,7 @@ public class userController {
         System.out.println("Token generated for user: " + loginRequest.getNick() + " - Token: " + token);
         return ResponseEntity.ok(new JwtResponse(token));
     }
+
     @GetMapping("/search")
     public ResponseEntity<User> searchUser(@RequestParam("query") String query) {
         System.out.println("search işlemine girdi");

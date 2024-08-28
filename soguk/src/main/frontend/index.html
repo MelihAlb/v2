@@ -30,6 +30,8 @@
     <ul id="topicList"></ul>
 </main>
 
+<button class="postT-button" onclick="window.location.href='PostTopic.html'">Başlık Oluştur</button>
+
 <div id="searchModal" class="modal">
     <div class="modal-content">
         <div class="modal-header">
@@ -76,6 +78,44 @@
                 window.location.href = `searchResult.html?q=${encodeURIComponent(searchQuery)}`;
             }
         });
+    });
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+
+        const authToken = localStorage.getItem('authToken');
+
+        const loginButton = document.getElementById('loginModal');
+        const signupButton = document.getElementById('signup-btn');
+        const userInfo = document.getElementById('user-info');
+        const guestInfo = document.getElementById('guest-info');
+        const userNameDisplay = document.getElementById('user-name');
+
+        if (authToken) {
+
+            userInfo.style.display = 'block';
+            guestInfo.style.display = 'none';
+
+
+            const nick = localStorage.getItem('nick');
+            if (nick) {
+                userNameDisplay.textContent = `Hoş Geldiniz, ${nick}`;
+            }
+        } else {
+
+            userInfo.style.display = 'none';
+            guestInfo.style.display = 'block';
+        }
+
+        const logoutBtn = document.getElementById('logout-btn');
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', function() {
+                localStorage.removeItem('authToken');
+                localStorage.removeItem('nick');
+                window.location.href = 'login.html';
+            });
+        }
     });
 </script>
 

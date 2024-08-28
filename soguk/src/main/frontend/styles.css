@@ -319,3 +319,19 @@ li {
     margin-top: 10px;
     margin-left: 50px;
 }
+.postT-button {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #1aa254;
+    color: white;
+    border: 2px solid black;
+    width: 75px;
+    height: 75px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 16px;
+}
+.postT-button:hover {
+    background-color: #1aa254;
+}
