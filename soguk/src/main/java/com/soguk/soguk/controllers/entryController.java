@@ -65,7 +65,7 @@ public class entryController {
         entryService.deleteEntry(id);
     }
 
-    @PreAuthorize("isAuthenticated()")
+
     @PostMapping("/{id}/like")
     public Entry likeEntry(@PathVariable String id) {
         ResponseEntity.ok("like atıldı");

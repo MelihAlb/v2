@@ -39,7 +39,7 @@ public class SecurityConfig {
                 .csrf(csrf ->csrf.disable())
                 .authorizeRequests(authorizeRequests ->
                         authorizeRequests
-                                .requestMatchers("/users","/entries","http://localhost:8080/topics","/topics/**","/entries/topic/**").permitAll()
+                                .requestMatchers("/users","/entries","http://localhost:8080/topics","/topics/**","/entries/topic/**","/entries/{id}/like").permitAll()
                                 .requestMatchers("/users/login","/user").permitAll()
                                 .requestMatchers(HttpMethod.POST, "/topics/post").authenticated()
                                 .anyRequest().authenticated()
