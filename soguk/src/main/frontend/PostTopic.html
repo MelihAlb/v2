@@ -73,7 +73,7 @@
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${authToken}`
+                        //'Authorization': `Bearer ${authToken}`   /*Bu işlem açıldığı zaman hata alınır ( jwtUtil null hatası), şuan kullanıcı girişi bakılma işlemi sadece ön yüzde oluyor */
                     },
                     body: JSON.stringify({ title })
                 });
