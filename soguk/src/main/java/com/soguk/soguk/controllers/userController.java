@@ -5,32 +5,26 @@ import com.soguk.soguk.models.User;
 import com.soguk.soguk.services.userService;
 import com.soguk.soguk.utils.JwtResponse;
 import com.soguk.soguk.utils.JwtUtil;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 import java.util.Optional;
-import java.util.logging.Logger;
+
 
 @RestController
 @RequestMapping("/users")
 public class userController {
-
     private final JwtUtil jwtUtil;
-    @Autowired
     private  userService userService;
-    @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @Autowired
-    public userController(userService userService, JwtUtil jwtUtil) {
-        this.userService = userService;
+    public userController(JwtUtil jwtUtil, PasswordEncoder passwordEncoder, com.soguk.soguk.services.userService userService) {
         this.jwtUtil = jwtUtil;
+        this.passwordEncoder = passwordEncoder;
+        this.userService = userService;
     }
 
     @PostMapping

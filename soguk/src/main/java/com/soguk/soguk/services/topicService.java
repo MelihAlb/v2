@@ -1,6 +1,5 @@
 package com.soguk.soguk.services;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.soguk.soguk.models.Topic;
 import com.soguk.soguk.repositories.topicRepo;
@@ -10,10 +9,16 @@ import java.util.List;
 @Service
 public class topicService {
 
-    @Autowired
-    private  topicRepo topicRepo;
-    @Autowired
-    private entryRepo entryRepo;
+
+    private final topicRepo topicRepo;
+
+    private final entryRepo entryRepo;
+
+    public topicService(com.soguk.soguk.repositories.topicRepo topicRepo, com.soguk.soguk.repositories.entryRepo entryRepo) {
+        this.topicRepo = topicRepo;
+        this.entryRepo = entryRepo;
+    }
+
     public Topic createTopic(Topic topic) {
         if (topicRepo.existsByTitle(topic.getTitle())){
             throw new IllegalArgumentException("Bu başlık bulunmaktadır");
@@ -28,9 +33,6 @@ public class topicService {
             topicRepo.save(topic);
         }
     }
-    public Topic getTopicById(String id) {
-        return topicRepo.findById(id).orElse(null);
-    }
 
     public Topic getTopicByTitle(String title) {
         return topicRepo.findByTitle(title);
@@ -39,11 +41,5 @@ public class topicService {
     public List<Topic> getAllTopics() {
         return topicRepo.findAll();
     }
-    public Topic updateTopic(Topic topic) {
-        return topicRepo.save(topic);
-    }
 
-    public void deleteTopic(String id) {
-        topicRepo.deleteById(id);
-    }
 }

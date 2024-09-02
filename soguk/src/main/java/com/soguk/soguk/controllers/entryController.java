@@ -2,12 +2,9 @@ package com.soguk.soguk.controllers;
 
 import com.soguk.soguk.models.Entry;
 import com.soguk.soguk.services.entryService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
 import java.security.Principal;
 import java.util.List;
 
@@ -16,8 +13,10 @@ import java.util.List;
 @CrossOrigin(origins = "http://localhost:3000")
 public class entryController {
 
-    @Autowired
-    private entryService entryService;
+    private final entryService entryService;
+    public entryController(entryService entryService) {
+        this.entryService = entryService;
+    }
 
     @GetMapping("/{id}")
     public Entry getEntry(@PathVariable String id) {

@@ -1,6 +1,9 @@
 package com.soguk.soguk.config;
 
+import com.soguk.soguk.repositories.userRepo;
+import com.soguk.soguk.services.CustomUserDetailsService;
 import com.soguk.soguk.utils.JwtRequestFilter;
+import com.soguk.soguk.utils.JwtUtil;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -20,35 +23,35 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     @Bean
+    public JwtRequestFilter jwtRequestFilter(JwtUtil jwtUtil, UserDetailsService userDetailsService) {
+        return new JwtRequestFilter(jwtUtil, userDetailsService);
+    }
+
+    @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
     @Bean
-    public UserDetailsService userDetailsService() {
-        /*
-        Bu method, kullanıcı doğrulaması yapmak için bir UserDetailsService bean'i döner.
-        Ancak şu an loadUserByUsername(String nick) metodu içinde bir kullanıcı yükleme işlemi bulunmamakta,
-        sadece null döndürmektedir. Gerçek bir uygulamada bu metod, kullanıcıyı veritabanından nick ile arar ve geri döner
-         */
-        return nick -> null;
+    public UserDetailsService userDetailsService(userRepo userRepo) {
+        return new CustomUserDetailsService(userRepo);
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtRequestFilter jwtRequestFilter) throws Exception {
         http
-                .csrf(csrf ->csrf.disable())
-                .authorizeRequests(authorizeRequests ->
+                .csrf(csrf -> csrf.disable())
+                .authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests
-                                .requestMatchers("/users","/entries","http://localhost:8080/topics","/topics/**","/entries/topic/**","/entries/{id}/like").permitAll()
-                                .requestMatchers("/users/login","/user").permitAll()
+                                .requestMatchers("/users", "/entries", "/topics/**", "/entries/topic/**", "/entries/{id}/like").permitAll()
+                                .requestMatchers("/users/login", "/user").permitAll()
                                 .requestMatchers(HttpMethod.POST, "/topics/post").authenticated()
                                 .anyRequest().authenticated()
                 )
                 .sessionManagement(sessionManagement ->
-                        sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)  // Stateless oturum yönetimi
+                        sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 );
 
-        http.addFilterBefore(new JwtRequestFilter(), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(jwtRequestFilter , UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

@@ -2,7 +2,6 @@ package com.soguk.soguk.services;
 
 import com.soguk.soguk.models.User;
 import com.soguk.soguk.repositories.userRepo;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -12,15 +11,13 @@ import java.util.Optional;
 @Service
 public class userService {
 
-    @Autowired
-    private userRepo userRepo;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    private final userRepo userRepo;
 
-    @Autowired
-    public userService(userRepo userRepo) {
+    private final PasswordEncoder passwordEncoder;
+
+    public userService(com.soguk.soguk.repositories.userRepo userRepo, PasswordEncoder passwordEncoder) {
         this.userRepo = userRepo;
-        this.passwordEncoder = new BCryptPasswordEncoder();
+        this.passwordEncoder = passwordEncoder;
     }
 
     public User registerUser(User user) {
@@ -54,17 +51,4 @@ public class userService {
         return userRepo.findByNick(nick);
     }
 
-    public User searchUserByNick(String query) {
-        if (query.startsWith("@")) {
-            query = query.substring(1);
-        }
-        return userRepo.findByNick(query);
-    }
-    public boolean validatePassword(String rawPassword, String hashedPassword) {
-        return passwordEncoder.matches(rawPassword, hashedPassword);
-    }
-
-    public String getPasswordEncoder() {
-        return null;
-    }
 }

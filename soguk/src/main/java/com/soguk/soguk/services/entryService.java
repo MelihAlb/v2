@@ -4,19 +4,18 @@ import com.soguk.soguk.models.Entry;
 import com.soguk.soguk.models.Topic;
 import com.soguk.soguk.repositories.entryRepo;
 import com.soguk.soguk.repositories.topicRepo;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public class entryService {
-
-    @Autowired
-    private entryRepo entryRepository;
-
-    @Autowired
-    private topicRepo topicRepository;
+    private final entryRepo entryRepository;
+    private final topicRepo topicRepository;
+    public entryService(entryRepo entryRepository, topicRepo topicRepository) {
+        this.entryRepository = entryRepository;
+        this.topicRepository = topicRepository;
+    }
 
     public Entry getEntryById(String id) {
         return entryRepository.findById(id).orElse(null);
