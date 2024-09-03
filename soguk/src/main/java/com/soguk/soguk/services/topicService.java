@@ -1,5 +1,6 @@
 package com.soguk.soguk.services;
 
+import com.soguk.soguk.utils.JwtUtil;
 import org.springframework.stereotype.Service;
 import com.soguk.soguk.models.Topic;
 import com.soguk.soguk.repositories.topicRepo;
@@ -11,18 +12,21 @@ public class topicService {
 
 
     private final topicRepo topicRepo;
-
     private final entryRepo entryRepo;
+    private final JwtUtil jwtUtil;
 
-    public topicService(com.soguk.soguk.repositories.topicRepo topicRepo, com.soguk.soguk.repositories.entryRepo entryRepo) {
+    public topicService(topicRepo topicRepo, entryRepo entryRepo, JwtUtil jwtUtil) {
         this.topicRepo = topicRepo;
         this.entryRepo = entryRepo;
+        this.jwtUtil=jwtUtil;
     }
 
-    public Topic createTopic(Topic topic) {
-        if (topicRepo.existsByTitle(topic.getTitle())){
+    public Topic createTopic(String token, Topic topic) {
+        if (topicRepo.existsByTitle(topic.getTitle())) {
             throw new IllegalArgumentException("Bu başlık bulunmaktadır");
         }
+        String nick = jwtUtil.extractUsername(token);
+        topic.setCreatorId(nick);
         return topicRepo.save(topic);
     }
     public void updateEntryCount(String topicId) {
@@ -42,4 +46,7 @@ public class topicService {
         return topicRepo.findAll();
     }
 
+    public List<Topic> getTopicsByCreatorId(String creatorId) {
+        return topicRepo.findByCreatorId(creatorId);
+    }
 }

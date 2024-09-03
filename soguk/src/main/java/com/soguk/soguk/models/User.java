@@ -10,11 +10,12 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.time.LocalDateTime;
+import java.util.List;
+
 @Setter
 @Getter
 @Document(collection = "users")
 public class User {
-
     @Id
     private String id;
     @Indexed(unique = true)
@@ -28,4 +29,6 @@ public class User {
     @LastModifiedDate
     @Field(name = "updatedAt")
     private LocalDateTime updatedAt;
+    @Field("liked_entries")
+    private List<Entry> likedEntries;
 }

@@ -42,8 +42,8 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests
-                                .requestMatchers("/users", "/entries", "/topics/**", "/entries/topic/**", "/entries/{id}/like").permitAll()
-                                .requestMatchers("/users/login", "/user").permitAll()
+                                .requestMatchers("/users/**", "/entries", "/topics/**", "/entries/topic/**", "/entries/{id}/like","/entries/{id}/likes").permitAll()
+                                .requestMatchers("/users/login", "/user","/topics/by/**","/entries/by/**").permitAll()
                                 .requestMatchers(HttpMethod.POST, "/topics/post").authenticated()
                                 .anyRequest().authenticated()
                 )

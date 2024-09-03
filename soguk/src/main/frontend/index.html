@@ -18,6 +18,7 @@
         <div id="user-info" style="display: none;">
             <span id="user-name"></span>
             <button id="logout-btn" class="button logout-btn">Çıkış Yap</button>
+            <button id="profile-btn">Profil</button>
         </div>
         <div id="guest-info">
             <a href="login.html" id="loginModal" class="button">Giriş Yap</a>
@@ -43,6 +44,15 @@
         </div>
     </div>
 </div>
+
+<footer>
+    <div id="authors-list">
+        <h2>Yazarlar</h2>
+        <ul id="authors">
+
+        </ul>
+    </div>
+</footer>
 
 <script src="app.js"></script>
 
@@ -82,12 +92,13 @@
 </script>
 
 <script>
+    document.getElementById('profile-btn').addEventListener('click', function() {
+        window.location.href = 'me.html';
+    });
     document.addEventListener("DOMContentLoaded", function() {
 
         const authToken = localStorage.getItem('authToken');
 
-        const loginButton = document.getElementById('loginModal');
-        const signupButton = document.getElementById('signup-btn');
         const userInfo = document.getElementById('user-info');
         const guestInfo = document.getElementById('guest-info');
         const userNameDisplay = document.getElementById('user-name');
@@ -119,5 +130,27 @@
     });
 </script>
 
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        fetch('http://localhost:8080/users/nicks')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                const authorsList = document.getElementById('authors');
+                authorsList.innerHTML = '';
+
+                data.forEach(nick => {
+                    const listItem = document.createElement('li');
+                    listItem.textContent = nick; // Kullanıcı ismini ekle
+                    authorsList.appendChild(listItem);
+                });
+            })
+            .catch(error => console.error('Error:', error));
+    });
+</script>
 </body>
 </html>

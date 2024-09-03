@@ -1,23 +1,30 @@
 package com.soguk.soguk.services;
 
+import com.soguk.soguk.models.Entry;
+import com.soguk.soguk.models.Topic;
 import com.soguk.soguk.models.User;
+import com.soguk.soguk.repositories.entryRepo;
+import com.soguk.soguk.repositories.topicRepo;
 import com.soguk.soguk.repositories.userRepo;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class userService {
-
+    private final entryRepo entryRepo;
     private final userRepo userRepo;
-
     private final PasswordEncoder passwordEncoder;
+    private final topicRepo topicRepo;
 
-    public userService(com.soguk.soguk.repositories.userRepo userRepo, PasswordEncoder passwordEncoder) {
+    public userService(userRepo userRepo, PasswordEncoder passwordEncoder, entryRepo entryRepo,topicRepo topicRepo) {
         this.userRepo = userRepo;
         this.passwordEncoder = passwordEncoder;
+        this.entryRepo = entryRepo;
+        this.topicRepo=topicRepo;
     }
 
     public User registerUser(User user) {
@@ -49,6 +56,34 @@ public class userService {
 
     public User findByNick(String nick) {
         return userRepo.findByNick(nick);
+    }
+
+    public List<String> getAllUserNicks() {
+        return userRepo.findAll().stream()
+                .map(User::getNick)
+                .collect(Collectors.toList());
+    }
+    public List<Entry> getLikedEntries(String userId) {
+        User user = userRepo.findById(userId).orElse(null);
+        if (user != null) {
+            return user.getLikedEntries();
+        }
+        return List.of();
+    }
+    public List<Topic> getCreatedTopics(String userId) { // Creator ID'ye göre topic'leri bul
+        User user = userRepo.findById(userId).orElse(null);
+        if (user != null) {
+            return topicRepo.findByCreatorId(userId);
+        }
+        return List.of();
+    }
+
+    public List<Entry> getCreatedEntries(String userId) {  // Author ID'ye göre entry'leri bul
+        User user = userRepo.findById(userId).orElse(null);
+        if (user != null) {
+            return entryRepo.findByAuthorId(userId);
+        }
+        return List.of();
     }
 
 }

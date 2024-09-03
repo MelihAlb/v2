@@ -1,9 +1,17 @@
 package com.soguk.soguk.controllers;
 
 import com.soguk.soguk.models.Entry;
+import com.soguk.soguk.models.Topic;
+import com.soguk.soguk.models.User;
 import com.soguk.soguk.services.entryService;
+import com.soguk.soguk.services.userService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
 import java.util.List;
@@ -13,9 +21,11 @@ import java.util.List;
 @CrossOrigin(origins = "http://localhost:3000")
 public class entryController {
 
+    private final userService userService;
     private final entryService entryService;
-    public entryController(entryService entryService) {
+    public entryController(entryService entryService,userService userService) {
         this.entryService = entryService;
+        this.userService=userService;
     }
 
     @GetMapping("/{id}")
@@ -30,10 +40,11 @@ public class entryController {
 
 
     @PostMapping
-    public Entry createEntry(@RequestBody Entry entry) {
-        ResponseEntity.ok("Entry oluşturuldu");
-        return entryService.createEntry(entry);
+    public ResponseEntity<Entry> createEntry(@RequestHeader("Authorization") String authHeader, @RequestBody Entry entry) {
+        String token = authHeader.replace("Bearer ", "");
+        Entry createdEntry = entryService.createEntry(token, entry);
 
+        return ResponseEntity.ok(createdEntry);
     }
     @PutMapping("/{id}")
     public ResponseEntity<?> updateEntry(@PathVariable String id, @RequestBody Entry updatedEntry, Principal principal) {
@@ -64,15 +75,42 @@ public class entryController {
         entryService.deleteEntry(id);
     }
 
-
     @PostMapping("/{id}/like")
-    public Entry likeEntry(@PathVariable String id) {
-        ResponseEntity.ok("like atıldı");
-        return entryService.likeEntry(id);
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<String> likeEntry(@PathVariable String id) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
+        if (authentication == null || !authentication.isAuthenticated() || authentication.getPrincipal().equals("anonymousUser")) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Giriş yapılmamış.");
+        }
+
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        String nick = userDetails.getUsername();
+
+        User user = userService.findByNick(nick);
+
+        boolean alreadyLiked = entryService.checkIfUserLiked(id, user);
+
+        if (alreadyLiked) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Zaten beğenildi.");
+        }
+
+        entryService.likeEntry(id, user);
+        return ResponseEntity.ok("Beğeni başarılı.");
     }
     @GetMapping("/topic/{topicId}")
     public List<Entry> getEntriesByTopicId(@PathVariable String topicId) {
         return entryService.getEntriesByTopicId(topicId);
+    }
+    @GetMapping("/{id}/likes") //Entry id'sine göre beğenenleri çeker
+    public ResponseEntity<List<String>> getLikesByEntryId(@PathVariable String id) {
+        List<String> likedBy = entryService.getLikesByEntryId(id);
+        return ResponseEntity.ok(likedBy);
+    }
+    @GetMapping("/by/{creatorId}")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<List<Entry>> getEntriesByCreatorId(@PathVariable String creatorId) {
+        List<Entry> entries = entryService.getEntriesByCreatorId(creatorId);
+        return ResponseEntity.ok(entries);
     }
 }

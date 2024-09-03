@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kullanıcı Bilgileri</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: row;
+        }
+
+        .header-center{
+            display: flex;
+        }
+
+        .container {
+            display: flex;
+            width: 100%;
+            max-width: 1000px; /* İstediğin maksimum genişlik */
+            margin: 0 auto; /* Ortalamak için */
+        }
+
+        .left, .right {
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .left {
+            flex: 1;
+            border-right: 1px solid #ddd;
+            margin-right: 20px; /* Sağdan 20px boşluk ekliyoruz */
+        }
+
+        .right {
+            flex: 1;
+        }
+
+        h2 {
+            margin-top: 0;
+        }
+
+        .item {
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <div class="header-left">
+        <a href="index.html">Ana Sayfa</a>
+    </div>
+    <div class="header-center">
+        <h1>Kullanıcı Bilgileri</h1>
+    </div>
+</header>
+<main>
+    <div class="container">
+        <div class="left">
+            <h2>Kullanıcının Başlıkları</h2>
+            <div id="user-content">
+                <!-- Başlıklar buraya eklenecek -->
+            </div>
+            <div id="user-entries"></div>
+        </div>
+        <div class="right">
+            <h2>Kullanıcı Bilgileri</h2>
+            <p><strong>Nick:</strong> <span id="user-nick">Yükleniyor...</span></p>
+            <p><strong>Email:</strong> <span id="user-email">Yükleniyor...</span></p>
+        </div>
+    </div>
+</main>
+<footer>
+    <!-- Footer içeriği -->
+</footer>
+<script>
+    document.addEventListener("DOMContentLoaded", async function() {
+        const token = localStorage.getItem('authToken');
+
+        if (token) {
+            try {
+                // Kullanıcı bilgilerini al
+                const userResponse = await fetch('http://localhost:8080/users/me', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                if (!userResponse.ok) throw new Error(`Kullanıcı bilgileri alınamadı: ${userResponse.statusText}`);
+
+                const userData = await userResponse.json();
+                const userNick = userData.nick || 'Bilgi mevcut değil';
+                document.getElementById('user-nick').textContent = userNick;
+                document.getElementById('user-email').textContent = userData.email || 'Bilgi mevcut değil';
+
+                // Başlıkları al
+                const topicsResponse = await fetch(`http://localhost:8080/topics/by/${encodeURIComponent(userNick)}`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                if (!topicsResponse.ok) throw new Error(`Başlıklar alınamadı: ${topicsResponse.statusText}`);
+
+                const topics = await topicsResponse.json();
+                const userContent = document.getElementById('user-content');
+                userContent.innerHTML = '';
+                const topicList = document.createElement('div');
+                topicList.innerHTML = '<h3>Başlıklar</h3>';
+                topics.forEach(topic => {
+                    const item = document.createElement('div');
+                    item.className = 'item';
+                    item.textContent = topic.title; // Başlıkları göster
+                    topicList.appendChild(item);
+                });
+                userContent.appendChild(topicList);
+
+                // Kullanıcının yazdığı entryleri al
+                const entriesResponse = await fetch(`http://localhost:8080/entries/by/${encodeURIComponent(userNick)}`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                if (!entriesResponse.ok) throw new Error(`Entryler alınamadı: ${entriesResponse.statusText}`);
+
+                const entries = await entriesResponse.json();
+                const userEntries = document.getElementById('user-entries');
+                userEntries.innerHTML = '';
+                entries.forEach(entry => {
+                    const item = document.createElement('div');
+                    item.className = 'item';
+                    item.textContent = `${entry.content} (Beğeni Sayısı: ${entry.likeCount})`;
+                    userEntries.appendChild(item);
+                });
+            } catch (error) {
+                console.error('Error fetching user content:', error);
+                document.getElementById('user-nick').textContent = 'Hata oluştu';
+                document.getElementById('user-email').textContent = 'Hata oluştu';
+            }
+        } else {
+            console.error('Token bulunamadı');
+            document.getElementById('user-nick').textContent = 'Giriş yapılmadı';
+            document.getElementById('user-email').textContent = 'Giriş yapılmadı';
+        }
+    });
+
+</script>
+</body>
+</html>

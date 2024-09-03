@@ -1,16 +1,22 @@
 package com.soguk.soguk.controllers;
 
 import com.mongodb.lang.NonNull;
+import com.soguk.soguk.DTO.UserDetailsResponse;
+import com.soguk.soguk.models.Entry;
+import com.soguk.soguk.models.Topic;
 import com.soguk.soguk.models.User;
 import com.soguk.soguk.services.userService;
 import com.soguk.soguk.utils.JwtResponse;
 import com.soguk.soguk.utils.JwtUtil;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 import java.util.Optional;
 
 
@@ -84,5 +90,51 @@ public class userController {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(updatedUser);
+    }
+    @GetMapping("/nicks") // yazarları çekmek için
+    public ResponseEntity<List<String>> getAllUserNicks() {
+        List<String> userNicks = userService.getAllUserNicks();
+        return ResponseEntity.ok(userNicks);
+    }
+
+    @GetMapping("/username/{username}/id")
+    public ResponseEntity<String> getUserIdByUsername(@PathVariable String username) {
+        Optional<User> userOptional = Optional.ofNullable(userService.findByNick(username));
+
+        if (!userOptional.isPresent()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        User user = userOptional.get();
+        return ResponseEntity.ok(user.getId()); // ID'yi döndür
+    }
+    @GetMapping("/nick/{nick}/details")
+    public ResponseEntity<UserDetailsResponse> getUserDetailsByUsername(@PathVariable String nick) {
+        Optional<User> userOptional = Optional.ofNullable(userService.findByNick(nick));
+
+        if (!userOptional.isPresent()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        User user = userOptional.get();
+        List<Entry> likedEntries = userService.getLikedEntries(user.getId());
+        List<Topic> createdTopics = userService.getCreatedTopics(user.getId());
+        List<Entry> createdEntries = userService.getCreatedEntries(user.getId());
+        UserDetailsResponse response = new UserDetailsResponse(user, likedEntries, createdTopics, createdEntries);
+        return ResponseEntity.ok(response);
+    }
+    @GetMapping("/me")// giriş yapmış kullanıcı bilgileri
+    public ResponseEntity<User> getCurrentUser(HttpServletRequest request) {
+        // Token'ı al ve kullanıcının kimliğini belirle
+        String token = request.getHeader("Authorization");
+        String nick = jwtUtil.extractUsername(token.replace("Bearer ", ""));
+
+        if (nick != null) {
+            User user = userService.findByNick(nick);
+            if (user != null) {
+                return ResponseEntity.ok(user);
+            }
+        }
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 }

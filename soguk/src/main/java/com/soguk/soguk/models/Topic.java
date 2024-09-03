@@ -24,4 +24,5 @@ public class Topic {
     @Field(name = "updateAt")
     private Date updatedAt;
     private int entryCount = 0;
+    private String creatorId;
 }
