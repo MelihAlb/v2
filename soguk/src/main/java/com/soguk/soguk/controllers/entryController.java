@@ -1,5 +1,6 @@
 package com.soguk.soguk.controllers;
 
+import com.soguk.soguk.DTO.entryDTO;
 import com.soguk.soguk.models.Entry;
 import com.soguk.soguk.models.Topic;
 import com.soguk.soguk.models.User;
@@ -55,35 +56,25 @@ public class entryController {
         if (existingEntry == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Entry bulunamadı.");
         }
-
-
         String loggedInUserNick = principal.getName();
-
-
         if (!existingEntry.getAuthorNick().equals(loggedInUserNick)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Bu entry'yi güncellemeye yetkiniz yok.");
         }
-
-
         updatedEntry.setId(id);
         Entry updated = entryService.updateEntry(updatedEntry);
         return ResponseEntity.ok(updated);
     }
-
     @DeleteMapping("/{id}")
     public void deleteEntry(@PathVariable String id) {
         entryService.deleteEntry(id);
     }
-
     @PostMapping("/{id}/like")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<String> likeEntry(@PathVariable String id) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
         if (authentication == null || !authentication.isAuthenticated() || authentication.getPrincipal().equals("anonymousUser")) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Giriş yapılmamış.");
         }
-
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         String nick = userDetails.getUsername();
 
@@ -112,5 +103,15 @@ public class entryController {
     public ResponseEntity<List<Entry>> getEntriesByCreatorId(@PathVariable String creatorId) {
         List<Entry> entries = entryService.getEntriesByCreatorId(creatorId);
         return ResponseEntity.ok(entries);
+    }
+    @GetMapping("/user/{nick}/liked-entries")
+    public ResponseEntity<List<entryDTO>> getEntriesLikedByUser(@PathVariable String nick, @RequestHeader("Authorization") String token) {
+        List<entryDTO> likedEntries = entryService.getEntriesLikedByUser(nick);
+
+        if (likedEntries.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+
+        return ResponseEntity.ok(likedEntries);
     }
 }

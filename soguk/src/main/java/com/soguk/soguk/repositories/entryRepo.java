@@ -11,4 +11,6 @@ public interface entryRepo extends MongoRepository<Entry, String> {
     List<Entry> findByTopicId(String topicId);
     List<Entry> findByAuthorId(String authorId);
     List<Entry> findByCreatorId(String creatorId);
+    List<Entry> findByLikedByContains(String nick);
+
 }

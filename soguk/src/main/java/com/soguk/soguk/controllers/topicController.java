@@ -27,6 +27,7 @@ public class topicController {
     public List<Topic> getAllTopics() {
         return topicService.getAllTopics();
     }
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("post")
     public ResponseEntity<Topic> createTopic(@RequestHeader("Authorization") String authHeader, @RequestBody Topic topic) {
         // Authorization başlığından token'ı al

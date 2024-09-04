@@ -1,5 +1,6 @@
 package com.soguk.soguk.services;
 
+import com.soguk.soguk.DTO.entryDTO;
 import com.soguk.soguk.models.Entry;
 import com.soguk.soguk.models.Topic;
 import com.soguk.soguk.models.User;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class entryService {
@@ -34,7 +36,7 @@ public class entryService {
         return entryRepo.findAll();
     }
 
-    public Entry createEntry(String token,Entry entry) {
+    public Entry createEntry(String token, Entry entry) {
         if (topicRepo.existsById(entry.getTopicId())) {
             updateEntryCount(entry.getTopicId());
             String nick = jwtUtil.extractUsername(token);
@@ -45,13 +47,14 @@ public class entryService {
             throw new IllegalArgumentException("Başlık bulunamadı");
         }
     }
+
     private void updateEntryCount(String topicId) {
         int count = entryRepo.countByTopicId(topicId);
-        Topic topic = topicRepo.findById(topicId).orElse(null);
-        if (topic != null) {
-            topic.setEntryCount(count);
-            topicRepo.save(topic);
-        }
+        System.out.println("Entry Count for Topic ID " + topicId + ": " + count);
+        Topic topic = topicRepo.findById(topicId).orElseThrow(() -> new IllegalArgumentException("Topic not found"));
+        topic.setEntryCount(count);
+        topicRepo.save(topic);
+        System.out.println("Updated Entry Count for Topic ID " + topicId);
     }
 
     public Entry updateEntry(Entry entry) {
@@ -93,8 +96,20 @@ public class entryService {
         Entry entry = entryRepo.findById(entryId)
                 .orElseThrow(() -> new IllegalArgumentException("Entry bulunamadı"));
         return new ArrayList<>(entry.getLikedBy());
+    }// Belirli bir kullanıcının beğendiği entry'leri döndürür
+    public List<entryDTO> getEntriesLikedByUser(String nick) {
+        List<Entry> entries = entryRepo.findByLikedByContains(nick);
+        return entries.stream()
+                .map(entry -> {
+                    entryDTO dto = new entryDTO();
+                    dto.setContent(entry.getContent());
+                    return dto;
+                })
+                .collect(Collectors.toList());
     }
+
     public List<Entry> getEntriesByCreatorId(String creatorId) {
         return entryRepo.findByCreatorId(creatorId);
     }
+
 }
