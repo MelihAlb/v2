@@ -34,9 +34,8 @@ public class userService {
         if (userRepo.existsByEmail(user.getEmail())) {
             throw new IllegalArgumentException("Email alınmış durumda");
         }
-        /*String encodedPassword = passwordEncoder.encode(user.getPassword());
+        String encodedPassword = passwordEncoder.encode(user.getPassword());
         user.setPassword(encodedPassword);
-         */
         return userRepo.save(user);
     }
 
@@ -48,8 +47,12 @@ public class userService {
         if (userRepo.existsById(user.getId())) {
 
             User existingUser = userRepo.findById(user.getId()).orElseThrow(() -> new IllegalArgumentException("Kullanıcı bulunamadı"));
+            if (user.getPassword() != null && !user.getPassword().isEmpty()) {
+                existingUser.setPassword(passwordEncoder.encode(user.getPassword()));
+            }
             user.setPassword(existingUser.getPassword());
             return userRepo.save(user);
+
         }
         return null;
     }

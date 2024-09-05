@@ -1,6 +1,7 @@
 package com.soguk.soguk.controllers;
 
 
+import com.soguk.soguk.DTO.TopicDTO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -19,29 +20,27 @@ public class topicController {
     }
 
     @GetMapping("/title/{title}")
-    public Topic getTopicByTitle(@PathVariable String title) {
-        return topicService.getTopicByTitle(title);
+    public ResponseEntity<TopicDTO> getTopicByTitle(@PathVariable String title) {
+        TopicDTO topicDTO = topicService.getTopicByTitle(title);
+        return ResponseEntity.ok(topicDTO);
     }
 
     @GetMapping
-    public List<Topic> getAllTopics() {
-        return topicService.getAllTopics();
+    public ResponseEntity<List<TopicDTO>> getAllTopics() {
+        List<TopicDTO> topics = topicService.getAllTopics();
+        return ResponseEntity.ok(topics);
     }
     @PreAuthorize("isAuthenticated()")
     @PostMapping("post")
-    public ResponseEntity<Topic> createTopic(@RequestHeader("Authorization") String authHeader, @RequestBody Topic topic) {
-        // Authorization başlığından token'ı al
+    public ResponseEntity<TopicDTO> createTopic(@RequestHeader("Authorization") String authHeader, @RequestBody TopicDTO topicDTO) {
         String token = authHeader.replace("Bearer ", "");
-
-        // Topic'i oluştur
-        Topic createdTopic = topicService.createTopic(token, topic);
-
+        TopicDTO createdTopic = topicService.createTopic(token, topicDTO);
         return ResponseEntity.ok(createdTopic);
     }
     @GetMapping("/by/{creatorId}")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<List<Topic>> getTopicsByCreatorId(@PathVariable String creatorId) {
-        List<Topic> topics = topicService.getTopicsByCreatorId(creatorId);
+    public ResponseEntity<List<TopicDTO>> getTopicsByCreatorId(@PathVariable String creatorId) {
+        List<TopicDTO> topics = topicService.getTopicsByCreatorId(creatorId);
         return ResponseEntity.ok(topics);
     }
 

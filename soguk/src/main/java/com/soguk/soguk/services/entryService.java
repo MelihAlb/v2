@@ -1,6 +1,7 @@
 package com.soguk.soguk.services;
 
 import com.soguk.soguk.DTO.entryDTO;
+import com.soguk.soguk.mappers.EntryMapper;
 import com.soguk.soguk.models.Entry;
 import com.soguk.soguk.models.Topic;
 import com.soguk.soguk.models.User;
@@ -100,14 +101,9 @@ public class entryService {
     public List<entryDTO> getEntriesLikedByUser(String nick) {
         List<Entry> entries = entryRepo.findByLikedByContains(nick);
         return entries.stream()
-                .map(entry -> {
-                    entryDTO dto = new entryDTO();
-                    dto.setContent(entry.getContent());
-                    return dto;
-                })
+                .map(EntryMapper.Instance::toDTO)
                 .collect(Collectors.toList());
     }
-
     public List<Entry> getEntriesByCreatorId(String creatorId) {
         return entryRepo.findByCreatorId(creatorId);
     }

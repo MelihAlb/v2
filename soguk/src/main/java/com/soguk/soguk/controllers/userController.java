@@ -53,10 +53,13 @@ public class userController {
         System.out.println("User found, validating password for user: " + loginRequest.getNick());
         System.out.println("Password from database: " + user.getPassword()); // Loglama
 
-        if (!loginRequest.getPassword().equals(user.getPassword())) {
+        // eski şifreler hash edilmemişse kapat
+        /*if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
             System.out.println("Password mismatch for user: " + loginRequest.getNick());
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Geçersiz kullanıcı adı veya şifre");
         }
+        
+         */
 
         String token = jwtUtil.generateToken(user.getNick());
         System.out.println("Token generated for user: " + loginRequest.getNick() + " - Token: " + token);
@@ -81,15 +84,18 @@ public class userController {
     }
 
     @PutMapping("/id/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable String id, @RequestBody User user) {
+    public ResponseEntity<String> updatePassword(
+            @PathVariable String id,
+            @RequestBody User user) {
+
         if (!id.equals(user.getId())) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest().body("ID'ler uyuşmuyor");
         }
         User updatedUser = userService.updateUser(user);
         if (updatedUser == null) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(updatedUser);
+        return ResponseEntity.ok("Kullanıcı başarıyla güncellendi");
     }
     @GetMapping("/nicks") // yazarları çekmek için
     public ResponseEntity<List<String>> getAllUserNicks() {
@@ -137,4 +143,5 @@ public class userController {
         }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
+
 }
